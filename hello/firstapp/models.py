@@ -13,10 +13,10 @@ class Event (models. Model):
 class Users(models.Model):
     number = models.TextField() 
     Full_name = models.TextField() 
-    gender = models.CharField()
+    gender = models.CharField(max_length=10)
     type = models.TextField()
     email = models.EmailField()
-    phone = models.CharField()
+    phone = models.CharField(max_length=100)
     direction = models.TextField() 
     event = models.TextField()
     image = models.ImageField(upload_to='hello/static/photos')

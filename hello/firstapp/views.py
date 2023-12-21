@@ -105,7 +105,7 @@ def registration_form(request):
             img = "hello/static/photos/def.webp"
         Users.objects.create(
             number = id,
-            full_name = fio,
+            Full_name = fio,
             gender = gen,
             type = type,
             email = mail,
