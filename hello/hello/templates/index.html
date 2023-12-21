@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Main</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+body {
+	scrollbar-width: none; /* Firefox */
+}
+body::-webkit-scrollbar { 
+	display: none; /* Safari and Chrome */
+}
+    .bg-primary {
+      background: #000;
+    }
+
+    .text-primary {
+      color: #000;
+    }
+
+    .p-primary{
+        color: #000;
+        text-wrap: nowrap;
+        margin: 1%;
+    }
+
+    #input, input, select{
+        margin: 1%;
+        box-shadow: rgba(33,33,33,0.4) 0 0 10px;
+    }
+
+    #center{
+        align-items: center;
+    }
+
+    .HOME{
+        padding: 2% 10%;
+        overflow: auto;
+    }
+
+    .card-header{
+        background: black;
+        color: #fff;
+    }
+
+    .card-title{
+      color:#000;
+    }
+
+    .card{
+        margin: 2% 0;
+        box-shadow: rgba(33,33,33,0.4) 0 0 10px;
+        color:#000;
+    }
+    .navbar-brand, .navbar-nav .nav-link {
+      color: var(--bs-primary) !important;
+    }
+  </style>
+</head>
+<body style="height: 100vh;">
+
+  <div class="container-fluid p-2 bg-dark text-white text-center">
+    <h1>Главное Окно</h1>
+  </div>
+  <div id="center" class="text-center" style="display: flex;">
+    <p class="p-primary">Поиск по дате С</p>
+    <input type="date" id="startDate" class="form-control" onchange="filterResults()">
+    <p class="p-primary">По</p>
+    <input type="date" id="endDate" class="form-control" onchange="filterResults()">
+    <p class="p-primary">Сортировка по категориям</p>  
+    <select  type="dropdown" id="dropdown" class="form-control" id="dropdown" onchange="filterResults()">
+      <option value="all">All</option>
+      <option value="Дизайн">Дизайн</option>
+      <option value="IT">IT</option>
+      <option value="BigData">BigData</option>
+    </select>
+  </div>
+  <div class="HOME" style="height: 83%;">
+    {% for card in cards %}
+      {{ card | safe }}
+    {% endfor %}
+  </div>
+  <div id="center" class="text-center" style="display: flex; justify-content: end; padding: 0 2%; position: absolute; bottom: 1%; left: 1%;">
+    <a type="button" style="padding: 10% 10%;" class="btn btn-sm text-white bg-dark" href="/import">Импорт</a>
+  </div>
+  {% if user.is_authenticated %}
+  <div id="center" class="text-center" style="display: flex; justify-content: end; padding: 0 2%; position: absolute; bottom: 1%; right: 1%;">
+    <a type="button" style="padding: 10% 10%;" class="btn btn-sm text-white bg-dark" href="lk">Организатор</a>
+  </div>
+  <div id="center" class="text-center" style="display: flex; justify-content:end; padding: 0 2%; position: absolute; bottom: 1%; right:46%">
+    <a type="button" style="padding: 10% 10%;" class="btn btn-sm text-white bg-dark" href="/my_people">Пользователи</a>
+  </div>
+  {% else %}
+  <div id="center" class="text-center" style="display: flex; justify-content: end; padding: 0 2%; position: absolute; bottom: 1%; right: 1%;">
+    <a type="button" style="padding: 10% 10%;" class="btn btn-sm text-white bg-dark" href="registration">Авторизация</a>
+  </div>
+  {% endif %}
+</body>
+<script defer>
+  function filterResults() {
+    var startDateValue = document.getElementById('startDate').value;
+    var endDateValue = document.getElementById('endDate').value;
+    var category = document.getElementById('dropdown').value;
+    var startDate = startDateValue ? new Date(startDateValue) : null;
+    var endDate = endDateValue ? new Date(endDateValue) : null;
+    var cards = document.querySelectorAll("[data^='event']");
+
+    cards.forEach(function(card) {
+      var cardDateStr = card.getAttribute('date');
+      var cardCategory = card.id;
+      var cardDate = new Date(cardDateStr.split('.').reverse().join('-'));
+      var dateMatch = (!startDate || (cardDate >= startDate)) && (!endDate || (cardDate <= endDate));
+      var categoryMatch = (category === 'all' || cardCategory === category);
+
+      card.style.display = (dateMatch && categoryMatch) ? 'block' : 'none';
+    });
+  }
+</script>
+</html>

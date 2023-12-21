@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>My People</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+body {
+	scrollbar-width: none; 
+}
+body::-webkit-scrollbar { 
+	display: none; 
+}
+
+    .text-primary {
+      color:#000 !important;
+    }
+
+    .p-primary{
+        color: rgba(163,61,185,1);
+        text-wrap: nowrap;
+        margin: 1%;
+    }
+
+    #input, input, select{
+        margin: 1%;
+        box-shadow: rgba(33,33,33,0.4) 0 0 10px;
+    }
+
+    #center{
+        align-items: center;
+    }
+
+    .HOME{
+        padding: 2% 10%;
+        overflow: auto;
+    }
+
+    .card-header{
+        background: #000;
+        color: #fff;
+    }
+
+    .card{
+        margin: 2% 0;
+        box-shadow: rgba(33,33,33,0.4) 0 0 10px;
+    }
+
+    .navbar-brand, .navbar-nav .nav-link {
+      color: var(--bs-primary) !important;
+    }
+  </style>
+</head>
+<body style="height: 100vh;">
+
+  <div class="container-fluid p-2 bg-dark text-white text-center">
+    <h1>{{Title}}</h1>
+  </div>
+  <div id="center" class="text-center">
+    <select  type="dropdown" class="form-control w-25" id="dropdown" onchange="hideElements(this.value)">
+        <option value="all">All</option>
+        {% for event in events %}
+            {{ event | safe }}
+        {% endfor %}
+    </select>
+  </div>
+  <div class="HOME" style="height: {{VH | safe}};">
+    {% for card in cards %}
+      {{ card | safe }}
+    {% endfor %}
+  </div>
+  <div id="center" class="text-purple text-center" style="display: flex; justify-content: space-between; padding: 0 3%;">
+    <a type="button" style="padding: 0.5% 1%;" class="btn btn-sm text-white bg-dark" href="/lk/">Назад</a>
+    <a type="button" style="padding: 0.5% 1%;" class="btn btn-sm text-white bg-dark" href="{{LINK}}">Добавить +</a>
+  </div>
+</body>
+<script defer>
+  function hideElements(selectedValue) {
+  const elements = document.querySelectorAll("[data^='people']");
+  elements.forEach(element => {
+    if (selectedValue == 'all') {
+      element.style.display = 'block';
+    }
+    else if (element.id == selectedValue) {
+      element.style.display = 'block';  
+    }
+    else {
+      element.style.display = 'none';
+    }
+    console.log(element.id), "  --  ", selectedValue;
+    });
+  }
+</script>
+</html>

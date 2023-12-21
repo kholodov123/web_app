@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>My Events</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+body {
+	scrollbar-width: none;
+}
+body::-webkit-scrollbar { 
+	display: none; 
+}
+
+    .text-primary {
+      color: #000 !important;
+    }
+
+    .p-primary{
+        color: #000;
+        text-wrap: nowrap;
+        margin: 1%;
+    }
+
+    #input, input, select{
+        margin: 1%;
+        box-shadow: rgba(33,33,33,0.4) 0 0 10px;
+    }
+
+    #center{
+        align-items: center;
+    }
+
+    .HOME{
+        padding: 2% 10%;
+        overflow: auto;
+    }
+
+    .card-header{
+        background: var(--bs-primary);
+        color: #fff;
+    }
+
+    .card{
+        margin: 2% 0;
+        box-shadow: rgba(33,33,33,0.4) 0 0 10px;
+    }
+
+    
+
+    /* Override Bootstrap's default primary color */
+    .navbar-brand, .navbar-nav .nav-link {
+      color: var(--bs-primary) !important;
+    }
+  </style>
+</head>
+<body style="height: 100vh;">
+  <div class="container-fluid p-2 bg-dark text-white text-center">
+    <h1>{{Title}}</h1>
+  </div>
+  <div id="center" class="text-center" style="display: {{Display}};">
+      <p class="p-primary">Поиск по дате с</p>
+      <input type="date" id="startDate" class="form-control" onchange="filterResults()">
+      <p class="p-primary">По</p>
+      <input type="date" id="endDate" class="form-control" onchange="filterResults()">
+      <div style="width: 200%; color: #000">Сортировка по</div>
+      <select  type="dropdown" id="dropdown" class="form-control" id="dropdown" onchange="filterResults()">
+        <option value="all">All</option>
+        <option value="Дизайн">Дизайн</option>
+        <option value="IT">IT</option>
+        <option value="BigData">BigData</option>
+      </select>
+  </div>
+  <div class="HOME" style="height: {{VH | safe}};">
+    {% for card in cards %}
+      {{ card | safe }}
+    {% endfor %}
+  </div>
+  <div id="center" class="text-center" style="display: flex; justify-content: space-between; padding: 0 3%;">
+    <a type="button" style="padding: 0.5% 1%;" class="btn btn-sm text-white bg-dark" href="/lk/">Назад</a>
+    <a type="button" style="padding: 0.5% 1%;" class="btn btn-sm text-white bg-dark" href="/lk/add_event">Добавить +</a>
+  </div>
+</body>
+<script defer>
+  function filterResults() {
+    // Получаем значения полей
+    var startDateValue = document.getElementById('startDate').value;
+    var endDateValue = document.getElementById('endDate').value;
+    var category = document.getElementById('dropdown').value;
+
+    // Преобразуем значения в даты, если они не пусты
+    var startDate = startDateValue ? new Date(startDateValue) : null;
+    var endDate = endDateValue ? new Date(endDateValue) : null;
+
+    // Получаем все карточки
+    var cards = document.querySelectorAll("[data^='event']");
+
+    // Проходим по каждой карточке
+    cards.forEach(function(card) {
+      // Получаем значения атрибутов карточки
+      var cardDateStr = card.getAttribute('date');
+      var cardCategory = card.id;
+      var cardDate = new Date(cardDateStr.split('.').reverse().join('-'));
+
+      // Проверяем соответствие фильтру
+      var dateMatch = (!startDate || (cardDate >= startDate)) && (!endDate || (cardDate <= endDate));
+      var categoryMatch = (category === 'all' || cardCategory === category);
+
+      // Устанавливаем стиль отображения в зависимости от результата фильтрации
+      card.style.display = (dateMatch && categoryMatch) ? 'block' : 'none';
+    });
+  }
+</script>
+</html>
